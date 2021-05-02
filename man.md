@@ -152,7 +152,11 @@ Armed with two important ideas—beta and gamma—we can now derive the system o
 
 The first key insight is to create three different functions to represent the three different compartments, which are the building blocks of the SIR model. We let
 
-$$ x = y^2 $$
+<img src="assets/SIR-base.png" alt="
+   S(t) = Susceptible
+   I(t) = Infected
+   R(t) = Removed
+" height="75"/>
 
 ### 1.3.4 In Practice
 <!--
