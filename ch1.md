@@ -83,7 +83,7 @@ In order to boil down disease modeling to its fundamental properties, we introdu
 
 **1. Beta \(β\)**
 
-> Symbol: β
+> Symbol: $$ \beta $$
 >
 > Definition: the average number of susceptibles that one infected will infect per unit time, assuming that everyone else in the population is susceptible.
 
@@ -93,7 +93,7 @@ It is also worth pointing out that beta _can and does_ change during the course 
 
 **2. Gamma \(γ\)**
 
-> Symbol: γ
+> Symbol: $$ \gamma$$
 >
 > Definition: The reciprocal of the average time it takes an infected to recover from the disease.
 
@@ -110,6 +110,64 @@ $$
 S(t) = \textrm{Susceptible}\\ 
 I(t) = \textrm{Infected}\\ 
 R(t) = \textrm{Removed}
+\end{cases}
+$$
+
+The key here is to think about the _change_ in each compartment rather the exact number of individuals in a compartment at a given time. To make things simpler, let's consider the base case: How many susceptibles does _one_ infected infect per unit time? We know that:
+
+| Compartment | Can be infected? |
+| :--- | :--- |
+| Susceptible | ✅ |
+| Infected | ❌ \(already infected\) |
+| Removed | ❌ \(either dead—which means reinfection not possible, or recovered—assumption is that recovered patients have already fought off the disease so reinfection is also not possible\) |
+
+^ It is worth noting here that the SIR model makes a small assumption—deaths will not affect the population structure significantly enough to change the model dynamics. We will use this fact to simplify our derivation of the equations.
+
+The table reveals that only susceptible patients can be infected—so we need to account for the probability that one infected will meet a susceptible to infect. We also know that if everyone was susceptible, one infected would infect $$ \beta$$ individuals. We can write this as:
+
+$$
+\frac{dS}{dt} = -\frac{\beta S}{N}
+$$
+
+We use the derivative to indicate the change in the susceptible compartment per unit time, $$ S $$ to represent the number of susceptibles, and $$ N $$ to represent the total population. Note the derivative is _negative_ since these people are getting infected and _leaving_ the susceptible compartment.
+
+The next key insight we will use to derive this system will be to note that the population must stay constant \(remember that we are assuming death does not significantly change the population structure\):
+
+$$
+S + I + R = N
+$$
+
+In order for this to be true we must have:
+
+$$
+\frac{dS}{dt} + \frac{dI}{dt} + \frac{dR}{dt} = 0
+$$
+
+So in order to balance out the negative derivative of the susceptible compartment, either the infected or recovered compartment should have a positive derivative. Since people in the susceptible compartment cannot recover or die without first being infected, we know that the infected compartment must have the inverse derivative of the susceptible compartment.
+
+$$
+\frac{dI}{dt} = -\frac{dS}{dt} = \frac{\beta S}{N}
+$$
+
+However, we also know that people move from the infected compartment into the removed compartment at the rate $$ \gamma $$. Therefore we must also have
+
+$$
+\frac{dI}{dt} = \frac{\beta S}{N} - \gamma I
+$$
+
+Lastly, since this last group of people are moving into the removed compartment, to ensure that the population is stable we must have
+
+$$
+\frac{dR}{dt} = \gamma I
+$$
+
+Putting all of this together yields the system of ordinary differential equations:
+
+$$
+\begin{cases} 
+S(t) = -\frac{\beta S}{N}\\
+I(t) = \frac{\beta S}{N} - \gamma I\\
+R(t) = \gamma I
 \end{cases}
 $$
 
