@@ -123,10 +123,10 @@ The key here is to think about the _change_ in each compartment rather the exact
 
 ^ It is worth noting here that the SIR model makes a small assumption—deaths will not affect the population structure significantly enough to change the model dynamics. We will use this fact to simplify our derivation of the equations.
 
-The table reveals that only susceptible patients can be infected—so we need to account for the probability that one infected will meet a susceptible to infect. We also know that if everyone was susceptible, one infected would infect $$ \beta$$ individuals. We can write this as:
+The table reveals that only susceptible patients can be infected—so we need to account for the probability that one infected will meet a susceptible to infect. We also know that if everyone was susceptible, one infected would infect $$ \beta$$ individuals. Remembering that there are $$ I $$ infecteds, we can write this as:
 
 $$
-\frac{dS}{dt} = -\frac{\beta S}{N}
+\frac{dS}{dt} = -\frac{\beta IS}{N}
 $$
 
 We use the derivative to indicate the change in the susceptible compartment per unit time, $$ S $$ to represent the number of susceptibles, and $$ N $$ to represent the total population. Note the derivative is _negative_ since these people are getting infected and _leaving_ the susceptible compartment.
@@ -146,13 +146,13 @@ $$
 So in order to balance out the negative derivative of the susceptible compartment, either the infected or recovered compartment should have a positive derivative. Since people in the susceptible compartment cannot recover or die without first being infected, we know that the infected compartment must have the inverse derivative of the susceptible compartment.
 
 $$
-\frac{dI}{dt} = -\frac{dS}{dt} = \frac{\beta S}{N}
+\frac{dI}{dt} = -\frac{dS}{dt} = \frac{\beta IS}{N}
 $$
 
 However, we also know that people move from the infected compartment into the removed compartment at the rate $$ \gamma $$. Therefore we must also have
 
 $$
-\frac{dI}{dt} = \frac{\beta S}{N} - \gamma I
+\frac{dI}{dt} = \frac{\beta IS}{N} - \gamma I
 $$
 
 Lastly, since this last group of people are moving into the removed compartment, to ensure that the population is stable we must have
@@ -165,11 +165,17 @@ Putting all of this together yields the system of ordinary differential equation
 
 $$
 \begin{cases} 
-S(t) = -\frac{\beta S}{N}\\
-I(t) = \frac{\beta S}{N} - \gamma I\\
+S(t) = -\frac{\beta IS}{N}\\
+I(t) = \frac{\beta IS}{N} - \gamma I\\
 R(t) = \gamma I
 \end{cases}
 $$
 
+That's it! These equations now form the basic SIR model. However, while the base SIR model provides us with a tool for studying how many people are _infected_ over the course of an outbreak, we can easily expand this model to include more compartments that can track _hospitalizations_, _deaths_, and other metrics.
+
 #### 1.3.4 In Practice
+
+To explore how we can expand this model, we'll consider a simple extension of the SIR model: the S-_E_-IR model, where the _E_ stands for _Exposed_. In this model we can not only track the number of people infected but also the number of people who _have_ the disease but cannot spread it yet. In epidemiology, the lag between exposure \(having the disease\) and infectiousness \(spreading the disease\) is known as the _incubation period_.
+
+Let's let $$ \delta $$ represent the incubation period in our model. Remember that, similarly to $$ \gamma $$, it helps to use the reciprocal of the incubation period, specifically $$ \frac {1}{\textrm{time until infectiousness}} $$.
 
