@@ -31,17 +31,21 @@ Before starting with epispot, let's take a moment to observe simple ways to mode
 | :--- | :--- | :--- |
 | Susceptible | **S** | Not yet infected with the virus |
 | Infected | **I** | Infected _and_ actively spreading the virus |
-| Recovered | **R** | Had the virus and are now immune and not spreading it |
+| Removed | **R** | Had the virus and are now immune and not spreading it or is dead \(in which case they are also not spreading the virus\) |
+
+{% hint style="info" %}
+The 'Removed' category is actually an abstraction created to make modeling easier. It really consists of two different categories: the Recovered and Dead categories. However, for simplicity, we merge these into one compartment in this chapter.
+{% endhint %}
 
 Now, we define a simulation in which each 'person' is a dot moving around a screen. In the beginning, everyone except one person is susceptible. The first person with the disease is often referred to as 'Patient Zero.' This patient will now go on to infect anyone they come in contact with \(i.e. any dot in the same position as them\). After a given amount of time, each dot will recover.
 
 An excellent example of this can be seen in this [Washington Post article by @HarryStevens](https://www.washingtonpost.com/graphics/2020/world/corona-simulator/). Although the simulation is small \(only around 200 people\), it gives a simple and intuitive feel for how a virus spreads throughout a population. Here's a sample of what it looks like:
 
-![An array of dots show susceptible, infected, and recovered people in different colors; most cases are clustered around one location](.gitbook/assets/1.1-wh-post.png)
+![An array of dots show susceptible, infected, and removed people in different colors; most cases are clustered around one location](.gitbook/assets/1.1-wh-post.png)
 
 * Blue = Susceptible
 * Orange = Infected
-* Pink = Recovered
+* Pink = Removed
 
 ### 1.2 Related Modeling Techniques
 
@@ -83,9 +87,11 @@ In order to boil down disease modeling to its fundamental properties, we introdu
 
 **1. Beta \(β\)**
 
-> Symbol: $$ \beta $$
->
-> Definition: the average number of susceptibles that one infected will infect per unit time, assuming that everyone else in the population is susceptible.
+{% hint style="info" %}
+Symbol: $$ \beta $$
+
+Definition: The average number of susceptibles that one infected will infect per unit time, assuming that everyone else in the population is susceptible.
+{% endhint %}
 
 At the beginning of an outbreak, when everyone _is_ susceptible, this parameter gives the number of susceptibles being infected by one infected per unit time. However, as people begin to get infected, beta no longer represents this quantity since an infected cannot infect another infected. At this stage in the outbreak, beta becomes a theoretical, **but still important**, quantity.
 
@@ -93,9 +99,11 @@ It is also worth pointing out that beta _can and does_ change during the course 
 
 **2. Gamma \(γ\)**
 
-> Symbol: $$ \gamma$$
->
-> Definition: The reciprocal of the average time it takes an infected to recover from the disease.
+{% hint style="info" %}
+Symbol: $$ \gamma $$
+
+Definition: The reciprocal of the average time it takes an infected to recover from the disease.
+{% endhint %}
 
 Gamma essentially tracks the inverse of the recovery time. In compartmental models, this is known as a _rate_—remember this, as it will come in handy later in more complex models. Higher values of gamma indicate lower recovery times and lower values of gamma indicate higher recovery times.
 
@@ -121,7 +129,9 @@ The key here is to think about the _change_ in each compartment rather the exact
 | Infected | ❌ \(already infected\) |
 | Removed | ❌ \(either dead—which means reinfection not possible, or recovered—assumption is that recovered patients have already fought off the disease so reinfection is also not possible\) |
 
-^ It is worth noting here that the SIR model makes a small assumption—deaths will not affect the population structure significantly enough to change the model dynamics. We will use this fact to simplify our derivation of the equations.
+{% hint style="info" %}
+It is worth noting here that the SIR model makes a small assumption—deaths will not affect the population structure significantly enough to change the model dynamics. We will use this fact to simplify our derivation of the equations.
+{% endhint %}
 
 The table reveals that only susceptible patients can be infected—so we need to account for the probability that one infected will meet a susceptible to infect. We also know that if everyone was susceptible, one infected would infect $$ \beta$$ individuals. Remembering that there are $$ I $$ infecteds, we can write this as:
 
@@ -165,9 +175,9 @@ Putting all of this together yields the system of ordinary differential equation
 
 $$
 \begin{cases} 
-S(t) = -\frac{\beta IS}{N}\\
-I(t) = \frac{\beta IS}{N} - \gamma I\\
-R(t) = \gamma I
+\Delta S = -\frac{\beta IS}{N}\\
+\Delta I = \frac{\beta IS}{N} - \gamma I\\
+\Delta R = \gamma I
 \end{cases}
 $$
 
@@ -178,4 +188,60 @@ That's it! These equations now form the basic SIR model. However, while the base
 To explore how we can expand this model, we'll consider a simple extension of the SIR model: the S-_E_-IR model, where the _E_ stands for _Exposed_. In this model we can not only track the number of people infected but also the number of people who _have_ the disease but cannot spread it yet. In epidemiology, the lag between exposure \(having the disease\) and infectiousness \(spreading the disease\) is known as the _incubation period_.
 
 Let's let $$ \delta $$ represent the incubation period in our model. Remember that, similarly to $$ \gamma $$, it helps to use the reciprocal of the incubation period, specifically $$ \frac {1}{\textrm{time until infectiousness}} $$.
+
+We know that the derivative for the Susceptible compartment won't change because exposed individuals can't infect anyone. What _does_ change, however, is which compartment receives the infected susceptibles. That compartment is, of course, the Exposed compartment. We can also write, similar to what we did with the Removed compartment, that the number of people _leaving_ the Exposed compartment is equal to $$ \delta E $$. Writing this together gives the derivative for the Exposed compartment:
+
+$$
+\frac {dE}{dt} = \frac {\beta IS}{N} - \delta E
+$$
+
+We also know that the portion of individuals leaving the Exposed compartment are moving to the Infected compartment. Putting this all together yields the system of equations for the SEIR model, as shown below:
+
+$$
+\begin{cases} 
+\Delta S = -\frac{\beta IS}{N}\\
+\Delta E = \frac{\beta IS}{N} - \delta E\\
+\Delta I = \delta E - \gamma I\\
+\Delta R = \gamma I
+\end{cases}
+$$
+
+At this point it's worth pointing out that epidemiologists don't rely on the parameter $$ \beta $$ that we have been using to simplify our models. Rather, they use a number known as R Naught, also called the effective reproductive number.
+
+{% hint style="info" %}
+R Naught, or $$ R_0 $$, describes the number of people that one infected will infect over the duration of their infectious period assuming that the entire population is susceptible.
+{% endhint %}
+
+A very easy way to calculate $$ R_0 $$ is to express it in terms of parameters we have already defined. If $$ \beta$$ yields the number of susceptibles infected per _unit time_, then we just need to multiply $$ \beta $$ by the infectious period to calculate $$ R_0 $$. As it happens, $$ \gamma $$ already gives us reciprocal of that number. Taking the reciprocal of $$ \gamma $$ itself will yield the time that an individual is infected. Lastly, multiplying this with $$ \beta $$ yields:
+
+$$
+R_0 = \frac{\beta}{\gamma}
+$$
+
+We can easily substitute this back into both our models to receive their standard forms. Both are shown below:
+
+{% tabs %}
+{% tab title="SIR Model" %}
+$$
+\begin{cases} 
+\Delta S = -\frac{\gamma R_0 IS}{N}\\
+\Delta I =  \frac{\gamma R_0 IS}{N} - \gamma I\\
+\Delta R = \gamma I
+\end{cases}
+$$
+{% endtab %}
+
+{% tab title="SEIR Model" %}
+$$
+\begin{cases} 
+\Delta S = -\frac{\gamma R_0 IS}{N}\\
+\Delta E = \frac{\gamma R_0 IS}{N} - \delta E\\
+\Delta I = \delta E - \gamma I\\
+\Delta R = \gamma I
+\end{cases}
+$$
+{% endtab %}
+{% endtabs %}
+
+What we've just seen here is how we can compile a model from various compartments, using the SIR model as a base. We also can see the formulas that govern the laws of infectious disease dynamics. However, as you can imagine, compiling these formulas for _each_ model you want to create and evaluating them again and again is quite tiring. That's where epispot comes in!
 
