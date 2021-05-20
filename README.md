@@ -14,12 +14,12 @@ This is the official manual to the epispot package. It includes background infor
      * 1.2.1 [Agent-based Modeling](ch1.md#1-2-1-agent-based-modeling)
      * 1.2.2 [Compartmental Models](ch1.md#1-2-2-compartmental-models)
    * 1.3 [The SIR Model](ch1.md#1-3-the-sir-model)
-     * [1.3.1 Motivation](ch1.md#1-3-1-motivation)
-     * [1.3.2 Definitions](ch1.md#1-3-2-definitions)
-     * [1.3.3 Derivation](ch1.md#1-3-3-derivation)
-     * [1.3.4 In Practice](ch1.md#1-3-4-in-practice)
-2. The Structure of epispot
-   * 2.1 Visualizing Compartmental Models
+     * 1.3.1 [Motivation](ch1.md#1-3-1-motivation)
+     * 1.3.2 [Definitions](ch1.md#1-3-2-definitions)
+     * 1.3.3 [Derivation](ch1.md#1-3-3-derivation)
+     * 1.3.4 [In Practice](ch1.md#1-3-4-in-practice)
+2. [The Structure of epispot](ch2.md#2-the-structure-of-epispot)
+   * 2.1 [Visualizing Compartmental Models](ch2.md#2-1-visualizing-compartmental-models)
    * 2.2 Epispot's Layer Combination Rules
    * 2.3 Compiling Models with epispot
 3. Contributing Guidelines
