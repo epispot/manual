@@ -19,9 +19,21 @@ This is the official manual to the epispot package. It includes background infor
      * [1.3.3 Derivation](ch1.md#1-3-3-derivation)
      * [1.3.4 In Practice](ch1.md#1-3-4-in-practice)
 2. The Structure of epispot
-3. Epispot Models & Compartments
-4. Notes on Documentation
-5. First-time Contributing Guidelines
-6. Contributing Guidelines for Core Developers
-7. Credits
+   * 2.1 Visualizing Compartmental Models
+   * 2.2 Epispot's Layer Combination Rules
+   * 2.3 Compiling Models with epispot
+3. Contributing Guidelines
+   * 3.1 General
+   * 3.2 Source
+   * 3.3 Tests
+   * 3.4 Repository
+   * 3.5 Documentation
+   * 3.6 Security 
+4. Credits
+   * 4.1 Open-Source Policy
+   * 4.2 Licensing
+   * 4.3 Citations
+   * 4.4 Idea & Inspiration
+   * 4.5 Dependencies
+   * 4.6 External Code Management Tools
 
