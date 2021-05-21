@@ -1,5 +1,5 @@
 ---
-description: v0.0.2.1.1-dev for epispot v2.1.1
+description: v0.0.2.1.2-dev for epispot v2.1.1
 ---
 
 # The epispot manual
@@ -23,6 +23,7 @@ This is the official manual to the epispot package. It includes background infor
 2. [The Structure of epispot](ch2.md#2-the-structure-of-epispot)
    * 2.1 [Visualizing Compartmental Models](ch2.md#2-1-visualizing-compartmental-models)
      * 2.1.1 [The SIR Model](ch2.md#2-1-1-the-sir-model)
+     * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
    * 2.2 Epispot's Layer Combination Rules
    * 2.3 Compiling Models with epispot
 3. Contributing Guidelines

@@ -10,7 +10,7 @@ description: 'Chapter 2: The Structure of epispot'
 
 * 2.1 [Visualizing Compartmental Models](ch2.md#2-1-visualizing-compartmental-models)
   * 2.1.1 [The SIR Model](ch2.md#2-1-1-the-sir-model)
-  * 2.1.2 Expanding Models
+  * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
   * 2.1.3 More Complex Models
 * 2.2 Epispot's Layer Combination Rules
 * 2.3 Compiling Models with epispot
@@ -67,4 +67,26 @@ $$
 Writing the system out like this would yield:
 
 ![S  {A}&#x2192;  I  {B}&#x2192;  R](.gitbook/assets/2.1.1-sir-transfer.png)
+
+#### 2.1.2 Expanding Models
+
+At this point, these illustrations may just seem like another way of representing what we've already accomplished with equations. After all, they don't seem to be of much help if you don't know what $$ A $$ and $$ B $$ are. But the true power of these illustrations comes from the ability to expand and understand compartmental models _without_ having to glance at long systems of equations, as we'll see in this chapter.
+
+What we are going to do is take the diagram for the SIR model and expand it to include the Exposed compartment of the SEIR model. We first add the new compartment into our diagram:
+
+![S  {A}&#x2192;  E  {C}&#x2192;  I  {B}&#x2192;  R](.gitbook/assets/2.1.2-seir-base.png)
+
+As you can see, all we had to do was move the $$ A $$ and $$ B $$ vectors to account for the new Exposed compartment and then add a new vector $$ C $$ to account for the $$ E $$ → $$ I $$ transfer. This gives us a hint to why such illustrations are so powerful.
+
+Another thing we can do is to classify $$ A $$, $$ B $$, and $$ C $$ as rates and probabilities. Rates are timing variables, like $$ \gamma $$, while probabilities are constants which regulate the probability of changing compartments, like the $$ \frac{S}{N} $$ part of the susceptible derivative that calculated the probability of an infected meeting a susceptible. Writing out the equations for $$ A $$, $$ B $$, and $$ C $$ gives:
+
+$$
+\begin{cases}
+A = \frac{\gamma R_0IS}{N}\\
+B = \gamma I\\
+C = \delta E
+\end{cases}
+$$
+
+We can clearly see that $$ B $$ and $$ C $$ are rates—they describe the time it takes for an individual to change compartments via the variables $$ \gamma $$ and $$ \delta $$. On the other hand, $$ A $$ describes a probability, specifically the probability of an infected meeting a susceptible, and then multiplying that by the number of people they meet, $$ \gamma R_0 $$. In the next example, we'll see how rates and probabilities come into play in more complex compartmental models.
 
