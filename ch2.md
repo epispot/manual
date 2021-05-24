@@ -12,7 +12,7 @@ description: 'Chapter 2: The Structure of epispot'
   * 2.1.1 [The SIR Model](ch2.md#2-1-1-the-sir-model)
   * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
   * 2.1.3 [More Complex Models](ch2.md#2-1-3-more-complex-models)
-* 2.2 Epispot's Layer Combination Rules
+* 2.2 [Epispot's Layer Combination Rules](ch2.md#2-2-epispots-layer-combination-rules)
 * 2.3 Compiling Models with epispot
 
 ### 2.1 Visualizing Compartmental Models
@@ -111,4 +111,16 @@ Now we can use rates and probabilities to fill in the arrows. We already know so
 ![Each arrow has a probability and rate attached to it](.gitbook/assets/2.1.3-sihrd.png)
 
 With the exception of the Susceptible → Infected arrow, each arrow has a probability and rate attached to it, with the probability in a capital letter and the rate in a lowercase Greek letter. This way of thinking of models allows us to understand how we can expand existing models and add new compartments while specifying the minimum number of variables necessary to do it. Essentially, this technique allows us to add as many compartments as we wish so long as each as its own designated probability and rate.
+
+### 2.2 Epispot's Layer Combination Rules
+
+As you've probably noticed in the examples above, we can't just connect any two random layers together. For example, connecting the Susceptible compartment with the Hospitalized compartment is completely illogical because in order to be hospitalized, you first must get the disease. 
+
+Of course, there are exceptions. You may want to model susceptibles being hospitalized for another reason and getting the disease from the hospital, but this is what custom models are for. Epispot's base compartments, however, have certain rules which are best expressed in the following diagram.
+
+![](.gitbook/assets/epi-spot-layer-combinations.png)
+
+As you can see, you _have_ to start in the susceptible compartment; it's the entry point to the entire loop. Next, you can either become exposed to the disease or infected with it. On becoming exposed, you _must_ become infected. However, after becoming infected, you can become hospitalized, recovered, dead, or go into a critical state \(which requires extensive resources that many hospitals only have a limited supply of\). 
+
+Hospitalized individuals can become recovered, critical, or dead, and critical individuals can become recovered or dead. You will notice that recovery and death act as **terminal states**, meaning that once reached, there are no more compartments to go to. That is, unless, you have a _recurrent_ model in which recovered patients can become susceptible again, the last possibility in our diagram. 
 
