@@ -1,5 +1,5 @@
 ---
-description: v0.0.2.1.3-dev for epispot v2.1.1
+description: v0.0.2.2-dev for epispot v2.1.1
 ---
 
 # The epispot manual
