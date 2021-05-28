@@ -13,7 +13,10 @@ description: 'Chapter 2: The Structure of epispot'
   * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
   * 2.1.3 [More Complex Models](ch2.md#2-1-3-more-complex-models)
 * 2.2 [Epispot's Layer Combination Rules](ch2.md#2-2-epispots-layer-combination-rules)
-* 2.3 Compiling Models with epispot
+* 2.3 [Compiling Models with epispot](ch2.md#2-3-compiling-models-with-epispot)
+  * 2.3.1 The Basics: Pre-compiled Models
+  * 2.3.2 Playing with the Model
+  * 2.3.3 Compiling the SIHRD Model
 
 ### 2.1 Visualizing Compartmental Models
 
@@ -123,4 +126,14 @@ Of course, there are exceptions. You may want to model susceptibles being hospit
 As you can see, you _have_ to start in the susceptible compartment; it's the entry point to the entire loop. Next, you can either become exposed to the disease or infected with it. On becoming exposed, you _must_ become infected. However, after becoming infected, you can become hospitalized, recovered, dead, or go into a critical state \(which requires extensive resources that many hospitals only have a limited supply of\). 
 
 Hospitalized individuals can become recovered, critical, or dead, and critical individuals can become recovered or dead. You will notice that recovery and death act as **terminal states**, meaning that once reached, there are no more compartments to go to. That is, unless, you have a _recurrent_ model in which recovered patients can become susceptible again, the last possibility in our diagram. 
+
+### 2.3 Compiling Models with epispot
+
+This is where we put all that we've learned into action. So far, we've built up an understanding of how compartmental models work in epispot, how compartments interact with each other, how to classify parameters, and how to derive the equations for these models. This time, however, we're going to let `epispot` do the hard work _for_ us.
+
+Before we start, it's important to go over some terminology. First of all, in order to build an epispot model, like the SIR model, you need to _compile_ it. These models are referred to as _compiled_ because they require explicit instructions on how to create each compartment and then put them together.  
+
+However, `epispot` comes with some built-in models which have been _pre-compiled_ for us, meaning that they are already built and ready for use. In the next section, we'll work with this type of model to create the SIR model. 
+
+#### 2.3.1 The Basics: Pre-compiled Models
 

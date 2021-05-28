@@ -1,5 +1,5 @@
 ---
-description: v0.0.2.2-dev for epispot v2.1.1
+description: v0.0.2.3-dev for epispot v2.1.1
 ---
 
 # The epispot manual
@@ -25,8 +25,11 @@ This is the official manual to the epispot package. It includes background infor
      * 2.1.1 [The SIR Model](ch2.md#2-1-1-the-sir-model)
      * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
      * 2.1.3 [More Complex Models](ch2.md#2-1-3-more-complex-models)
-   * [2.2 Epispot's Layer Combination Rules](ch2.md#2-2-epispots-layer-combination-rules)
-   * 2.3 Compiling Models with epispot
+   * 2.2 [Epispot's Layer Combination Rules](ch2.md#2-2-epispots-layer-combination-rules)
+   * 2.3 [Compiling Models with epispot](ch2.md#2-3-compiling-models-with-epispot)
+     * 2.3.1 The Basics: Pre-compiled Models
+     * 2.3.2 Playing with the Model
+     * 2.3.3 Compiling the SIHRD Model
 3. Contributing Guidelines
    * 3.1 General
    * 3.2 Source
