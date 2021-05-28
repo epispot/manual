@@ -14,8 +14,8 @@ description: 'Chapter 2: The Structure of epispot'
   * 2.1.3 [More Complex Models](ch2.md#2-1-3-more-complex-models)
 * 2.2 [Epispot's Layer Combination Rules](ch2.md#2-2-epispots-layer-combination-rules)
 * 2.3 [Compiling Models with epispot](ch2.md#2-3-compiling-models-with-epispot)
-  * 2.3.1 The Basics: Pre-compiled Models
-  * 2.3.2 Playing with the Model
+  * 2.3.1 [The Basics: Pre-compiled Models](ch2.md#2-3-1-the-basics-pre-compiled-models)
+  * 2.3.2 [Playing with the Model](ch2.md#2-3-2-playing-with-the-model)
   * 2.3.3 Compiling the SIHRD Model
 
 ### 2.1 Visualizing Compartmental Models
@@ -263,5 +263,35 @@ Running the program again should give a plot like the following:
 
 ![](.gitbook/assets/2.3.2-high-r-naught.png)
 
+Notice how an increased value of 5 from 2.5 gets many more infecteds. In the last plot, the peak of the infected category was reached after around 80 days whereas in this plot, the peak is not only higher but is reached sooner. Additionally, because the value of R naught _changed_ in this example, the infected bell curve is slightly asymmetrical.
 
+There's one more parameter that we can do this to: `gamma`. Because we have an SIR model, everyone has a 100% probability of moving to the removed compartment, however, we _can_ change the _rate_ at which they move to that compartment. Let's decrease the rate to simulate faster recovery times as hospitals learn how to treat infected patients. We can do this via a scaled version of the equation we used for R naught previously. For this example, we'll use the equation
+
+$$
+f(t) = \frac{e^{-\frac{t}{100}}}{1+e^{-\frac{t}{100}}}
+$$
+
+which starts at 0.5 and slowly approaches 1 as time progresses. In reality, it will only get to about 0.25 by the end of our graph. Changing the corresponding code to include this equation will result in:
+
+```python
+def gamma(t):
+    e = 2.71828
+    return ( e ** (-t / 100) ) / ( 1 + e ** (-t / 100) )
+```
+
+However, we can't run the model just yet! Because we have reduced the value of `gamma`, we also must reduce R naught. This is because now the same amount of infecteds need to infect the same amount of susceptibles in a much, much shorter window of time. Running this model without changing R naught would result in drastically unrealistic projections. For this example, we'll halve the value of R naught with:
+
+```python
+def R_0(t):
+    e = 2.71828
+    return ( 5 * e ** (-t / 100) ) / ( 1 + e ** (-t / 100) )
+```
+
+Plotting this gives:
+
+![](.gitbook/assets/2.3.2-high-gamma.png)
+
+Notice here how the number of infecteds is _drastically_ reduced as a result of the faster recovery times. However, roughly the same amount of susceptibles are infected. 
+
+Now that we have successfully built and edited a model, we are ready to _compile_ a model. In the next example, we'll take a look at how we can build the SIHRD model from scratch.
 
