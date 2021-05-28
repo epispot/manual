@@ -137,3 +137,131 @@ However, `epispot` comes with some built-in models which have been _pre-compiled
 
 #### 2.3.1 The Basics: Pre-compiled Models
 
+For this tutorial, fire up a terminal and install `epispot` if you haven't already. Installation instructions can be found on the [GitHub repository](https://github.com/epispot/epispot/blob/master/README.md#installation), although the easiest way to install it would be simply through `pip` with:
+
+```text
+$ pip install epispot
+```
+
+Next, create a blank `.py` file and import `epispot` with:
+
+```python
+import epispot as epi
+```
+
+Note that it's recommended that you import `epispot` with the alias `epi`. This makes it easier to call functions from `epispot` with less code. In many instances in the documentation, it is assumed that `epispot` has been imported like this.
+
+In this tutorial, we're going to be using the `epi.pre.SIR` function to create a pre-compiled SIR model. As you can see from [the documentation](https://epispot.github.io/epispot/pre#epispot.pre.SIR), it takes 4 parameters. They are R naught, the total population, and the recovery probability and rate.
+
+{% hint style="info" %}
+Many parameters used in disease modeling are shortened in code to avoid using unnecessary keystrokes. In `epispot` common abbreviations include:
+
+* R naught → `R_0`
+* Total population → `N`
+* Probability of _foo_  → `p_foo`
+* Rate of _foo  →_ `foo_rate`
+{% endhint %}
+
+It's important to note that in `epispot`, all parameters are implemented as _functions_, not just constant values. This is to account for changes to these parameters over time. For now, we'll just return constant values in our functions, but [later](ch2.md#2-3-2-playing-with-the-model), we'll play with these functions to see their effect on the model.
+
+Let's create the following constant-valued functions:
+
+```python
+def N(t): return 1e6
+def R_0(t): return 2.5
+def p_recovery(t): return 1.0
+def gamma(t): return 1/8
+```
+
+Each of these functions takes a mandatory parameter `t`, which represents time. For now, we won't use this parameter in the function to make things simple. After setting this up, we can now call the `epi.pre.SIR` function:
+
+```python
+SIR_Model = epi.pre.SIR(R_0, N, p_recovery, gamma)
+```
+
+This `SIR_Model` variable will hold an `epispot` `Model` class. In order to find solutions to the `Model` class, we'll call the `integrate` method. At this point, the model has already been compiled \(i.e. the system of equations needed to compute predictions has already been established\). All we need to do now is solve that system of equations. `epispot` implements an algorithm known as [Euler's method](https://en.wikipedia.org/wiki/Euler's_method) to do this. As you can see from [its documentation](https://epispot.github.io/epispot/models.html#epispot.models.Model.integrate), it takes a mandatory `timesteps` argument and an optional `starting_state` argument we'll go over in the [next section](ch2.md#2-3-2-playing-with-the-model).
+
+The `timesteps` argument basically asks for a Python `range` object with `start` and `stop` values corresponding to the days of the outbreak that you want to model. This also determines the shape of the returned value.
+
+```python
+Solutions = SIR_Model.integrate(range(100))
+```
+
+If you run this program with
+
+```python
+print(len(Solutions))
+```
+
+you'll see that it is exactly 100 elements long. And if you add
+
+```python
+print(Solutions[0])
+```
+
+you'll see that each solution element consists of a susceptible, infected, and removed sublist. To generalize this, running
+
+```python
+print(Solutions[t])
+```
+
+will yield:
+
+```python
+[..., ..., ...]  # Susceptible, Infected, Removed on day #t
+```
+
+Now that we understand the `Model.integrate` method, we can use a shortcut to generate a visual plot of the data. To do this, **delete** the `Solutions` definition and all the code that came after it. Now, simply type:
+
+```python
+Plot = epi.plots.plot_comp_nums(SIR_Model, range(100))
+# Plot.show()  # uncomment for newer versions of epispot (>2.1.1)
+```
+
+You should see a `matplotlib` plot pop up on your screen that looks something like this:
+
+![Each compartment is represented by a different colored line](.gitbook/assets/2.3.1-sir-demo.png)
+
+That's it! You've successfully created your first `epispot` model.
+
+#### 2.3.2 Playing with the Model
+
+In this section, we are only going to use the plotting feature to compare models as it is much faster and simpler. Recall that your code should currently look like this:
+
+```python
+import epispot as epi
+
+def N(t): return 1e6
+def R_0(t): return 2.5
+def p_recovery(t): return 1.0
+def gamma(t): return 1/8
+
+SIR_Model = epi.pre.SIR(R_0, N, p_recovery, gamma)
+Plot = epi.plots.plot_comp_nums(SIR_Model, range(100))
+# Plot.show()  # necessary in newer versions of epispot
+```
+
+Generally, we will keep the total population, `N`, the same. However, one thing that _does_ change over an outbreak is R naught. Typically, R naught will slowly decrease over the course of an outbreak as stringent measures are taken to avoid unnecessary contact. We can model this with logistic growth. In fact, the equation 
+
+$$
+f(t) = \frac{10e^{-\frac{t}{100}}}{1+e^{-\frac{t}{100}}}
+$$
+
+yields a slow exponential decay from 5 to around 2.75 after 100 days. Plotting the resulting function yields the graph below:
+
+![Variation of R naught over 100 days](.gitbook/assets/2.3.2-r-naught-plot.png)
+
+Implementing it as our new R naught function will require changing the old function to
+
+```python
+def R_0(t):
+    e = 2.71828
+    return ( 10 * e ** (-t / 100) ) / ( 1 + e ** (-t / 100) )
+```
+
+Running the program again should give a plot like the following:
+
+![](.gitbook/assets/2.3.2-high-r-naught.png)
+
+
+
