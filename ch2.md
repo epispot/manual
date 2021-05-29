@@ -16,7 +16,7 @@ description: 'Chapter 2: The Structure of epispot'
 * 2.3 [Compiling Models with epispot](ch2.md#2-3-compiling-models-with-epispot)
   * 2.3.1 [The Basics: Pre-compiled Models](ch2.md#2-3-1-the-basics-pre-compiled-models)
   * 2.3.2 [Playing with the Model](ch2.md#2-3-2-playing-with-the-model)
-  * 2.3.3 Compiling the SIHRD Model
+  * 2.3.3 [Compiling the SIHRD Model](ch2.md#2-3-3-compiling-the-sihrd-model)
 
 ### 2.1 Visualizing Compartmental Models
 
@@ -294,4 +294,149 @@ Plotting this gives:
 Notice here how the number of infecteds is _drastically_ reduced as a result of the faster recovery times. However, roughly the same amount of susceptibles are infected. 
 
 Now that we have successfully built and edited a model, we are ready to _compile_ a model. In the next example, we'll take a look at how we can build the SIHRD model from scratch.
+
+#### 2.3.3 Compiling the SIHRD Model
+
+For this example, we're going to keep everything simple and just use constants for the function values. However, if you would like to do some experimentation of your own, feel free to use the lessons learned in [2.3.2](ch2.md#2-3-2-playing-with-the-model) to add variable parameter values.
+
+The first thing that we have to remember is the structure of the SIHRD model. If you recall from [2.1.3](ch2.md#2-1-3-more-complex-models), the diagram of the model looks something like this:
+
+![S &#x2192; I &#x2192; R, H  ;  H &#x2192; D](.gitbook/assets/2.1.3-sihrd.png)
+
+Let's start by setting this up by importing `epispot` and writing a comment which demonstrates the flow of our model \(this will come helpful later\):
+
+```python
+"""
+Susceptible --> Infected --> Hospitalized --> Dead
+                |            |--------------> Recovered
+                |---------------------------/
+"""
+
+import epispot as epi
+```
+
+We also know we are going to need functions for each of the variables in our diagram above. To keep things simple, we are going to create one function called `place` which will just return `1/4` as a placeholder for repeated definitions of rates and probabilities. This will look like:
+
+```python
+def place(t): return 0.25
+```
+
+Next, we create functions for the total population, R naught, hospitalization probability from infected, removed probability from infected, probability of death, and probability of recovery from hospitalization. Note that for compartments that have two different pathways, like the Infected and Hospitalized compartments, the probabilities of moving across those pathways needs to add up to one. In the end, we compile this list of functions:
+
+```python
+def place(t): return 0.25
+def N(t): return 1e6
+def R_0(t): return 2.5
+def inf_to_hos(t): return 0.5
+def inf_to_rec(t): return 0.5
+def hos_to_dead(t): return 0.5
+def hos_to_rec(t): return 0.5
+```
+
+Now, we use an extra step known as compilation. For each compartment we want to implement, we need to create a class to _compile_ that compartment. For example, for the susceptible compartment we will call:
+
+```python
+Susceptible = epi.comps.Susceptible(layer_index=0, R_0=R_0, gamma=place, N=N)
+```
+
+The first parameter of any compartment is something called the _layer index_. It determines the order of compartments, starting with `0`, but does not affect the results. For this model, we'll order the compartments as Susceptible, Infected, Hospitalized, Recovered, Dead. Compiling all the other compartments looks like:
+
+```python
+Susceptible = epi.comps.Susceptible(layer_index=0, R_0=R_0, gamma=place, N=N)
+
+Infected = epi.comps.Infected(layer_index=1, N=N, R_0=R_0, recovery_rate=place,
+                              p_recovery=inf_to_rec, p_hospitalized=inf_to_hos,
+                              hospital_rate=place)
+
+Hospitalized = epi.comps.Hospitalized(layer_index=2, p_hos=inf_to_hos, 
+                                      hos_rate=place, alpha=hos_to_dead, 
+                                      rho=place, p_recovery=hos_to_rec,
+                                      recovery_rate=place)
+
+Recovered = epi.comps.Recovered(layer_index=3, p_from_inf=inf_to_rec, 
+                                from_inf_rate=place, p_from_hos=hos_to_rec, 
+                                from_hos_rate=place)
+
+Dead = epi.comps.Dead(layer_index=4, alpha_hos=hos_to_dead, rho_hos=place)
+```
+
+Now, we add all of these compartments into a _Model_, which will link all of the compartments together into a single object. We start by creating the model:
+
+```python
+SIHRD_Model = epi.models.Model(init_pop=N(0))
+```
+
+Notice that the `init_pop` parameter _must_ be a constant value because it represents the _initial_ population. Now, we use the `.add_layer` method to add all the layers we've compiled:
+
+```python
+SIHRD_Model.add_layer(layer=Susceptible, layer_name='Susceptible', layer_map=[Infected])
+SIHRD_Model.add_layer(layer=Infected, layer_name='Infected', layer_map=[Hospitalized, Recovered])
+SIHRD_Model.add_layer(layer=Hospitalized, layer_name='Hospitalized', layer_map=[Dead, Recovered])
+SIHRD_Model.add_layer(layer=Recovered, layer_name='Recovered', layer_map=[])
+SIHRD_Model.add_layer(layer=Dead, layer_name='Dead', layer_map=[])
+```
+
+The first parameter is where you input the class that has been compiled. The next parameter, `layer_name` represents the type of compartment that you are adding. You **must** use the correct compartment name or the layer will not be recognized. Lastly, the `layer_map` is a list of all the layers that this layer connects to. For layers that are terminal, the map is an empty list.
+
+Finally, we can plot the model with:
+
+```python
+Plot = epi.plots.plot_comp_nums(SIHRD_Model, range(100))
+# Plot.show()  # uncomment for newer versions of epispot (>2.1.1)
+```
+
+The full code for this example should look like:
+
+```python
+"""
+Susceptible --> Infected --> Hospitalized --> Dead
+                |            |--------------> Recovered
+                |---------------------------/
+"""
+
+import epispot as epi
+
+def place(t): return 0.25
+def N(t): return 1e6
+def R_0(t): return 2.5
+def inf_to_hos(t): return 0.5
+def inf_to_rec(t): return 0.5
+def hos_to_dead(t): return 0.5
+def hos_to_rec(t): return 0.5
+
+
+Susceptible = epi.comps.Susceptible(layer_index=0, R_0=R_0, gamma=place, N=N)
+
+Infected = epi.comps.Infected(layer_index=1, N=N, R_0=R_0, gamma=place,
+                              recovery_rate=place, p_recovery=inf_to_rec,
+                              p_hospitalized=inf_to_hos, hospital_rate=place)
+
+Hospitalized = epi.comps.Hospitalized(layer_index=2, p_hos=inf_to_hos,
+                                      hos_rate=place, alpha=hos_to_dead,
+                                      rho=place, p_recovery=hos_to_rec,
+                                      recovery_rate=place)
+
+Recovered = epi.comps.Recovered(layer_index=3, p_from_inf=inf_to_rec,
+                                from_inf_rate=place, p_from_hos=hos_to_rec,
+                                from_hos_rate=place)
+
+Dead = epi.comps.Dead(layer_index=4, alpha_hos=hos_to_dead, rho_hos=place)
+
+
+SIHRD_Model = epi.models.Model(init_pop=N(0))
+SIHRD_Model.add_layer(layer=Susceptible, layer_name='Susceptible', layer_map=[Infected])
+SIHRD_Model.add_layer(layer=Infected, layer_name='Infected', layer_map=[Hospitalized, Recovered])
+SIHRD_Model.add_layer(layer=Hospitalized, layer_name='Hospitalized', layer_map=[Dead, Recovered])
+SIHRD_Model.add_layer(layer=Recovered, layer_name='Recovered', layer_map=[])
+SIHRD_Model.add_layer(layer=Dead, layer_name='Dead', layer_map=[])
+
+Plot = epi.plots.plot_comp_nums(SIHRD_Model, range(100))
+# Plot.show()  # uncomment for newer versions of epispot (>2.1.1)
+```
+
+Run it and _viola_, it works!
+
+![The SIHRD Model](.gitbook/assets/2.3.3-sihrd-model.png)
+
+✨🍰✨ Congratulations! You are now an `epispot` wizard! You should now be able to understand epispot's documentation since you understand the basic layout of `epispot` and how to compile models. The link to epispot's documentation is: [https://epispot.github.io/epispot](https://epispot.github.io/epispot). If you have any questions or feedback, don't hesitate to [submit an issue](https://github.com/epispot/epispot/issues/new) on the GitHub repository.
 

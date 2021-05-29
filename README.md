@@ -1,10 +1,10 @@
 ---
-description: v0.0.2.3-dev for epispot v2.1.1
+description: v0.1.0-beta for epispot v2.1.1
 ---
 
 # The epispot manual
 
-**Not production ready**
+**This manual is currently in development. Unlinked sections have not been created yet.**
 
 This is the official manual to the epispot package. It includes background information on the mathematical modeling of infectious diseases, the motivation behind the epispot package, a complete guide to using epispot and understanding its documentation, and a full explanation of the epispot development process. As epispot grows, this manual is subject to change and will be versioned on the [GitHub repo](https://github.com/epispot/manual/releases). This current version of the manual is maintained at [https://github.com/epispot/manual](https://github.com/epispot/manual) and ported to both HTML and PDF formats via GitBook.
 
@@ -29,7 +29,7 @@ This is the official manual to the epispot package. It includes background infor
    * 2.3 [Compiling Models with epispot](ch2.md#2-3-compiling-models-with-epispot)
      * 2.3.1 [The Basics: Pre-compiled Models](ch2.md#2-3-1-the-basics-pre-compiled-models)
      * 2.3.2 [Playing with the Model](ch2.md#2-3-2-playing-with-the-model)
-     * 2.3.3 Compiling the SIHRD Model
+     * 2.3.3 [Compiling the SIHRD Model](ch2.md#2-3-3-compiling-the-sihrd-model)
 3. Contributing Guidelines
    * 3.1 General
    * 3.2 Source
