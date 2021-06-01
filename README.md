@@ -1,5 +1,5 @@
 ---
-description: v0.1.0.1-beta-3.1 for epispot v2.1.1
+description: v0.1.0.2-beta-3.2.3 for epispot v2.1.1
 ---
 
 # The epispot manual
