@@ -1,5 +1,5 @@
 ---
-description: v0.1.0-beta for epispot v2.1.1
+description: v0.1.0.1-beta-3.1 for epispot v2.1.1
 ---
 
 # The epispot manual
@@ -20,7 +20,7 @@ This is the official manual to the epispot package. It includes background infor
      * 1.3.2 [Definitions](ch1.md#1-3-2-definitions)
      * 1.3.3 [Derivation](ch1.md#1-3-3-derivation)
      * 1.3.4 [In Practice](ch1.md#1-3-4-in-practice)
-2. [The Structure of epispot](ch2.md#2-the-structure-of-epispot)
+2. [The Structure of epispot](ch2.md)
    * 2.1 [Visualizing Compartmental Models](ch2.md#2-1-visualizing-compartmental-models)
      * 2.1.1 [The SIR Model](ch2.md#2-1-1-the-sir-model)
      * 2.1.2 [Expanding Models](ch2.md#2-1-2-expanding-models)
@@ -30,13 +30,21 @@ This is the official manual to the epispot package. It includes background infor
      * 2.3.1 [The Basics: Pre-compiled Models](ch2.md#2-3-1-the-basics-pre-compiled-models)
      * 2.3.2 [Playing with the Model](ch2.md#2-3-2-playing-with-the-model)
      * 2.3.3 [Compiling the SIHRD Model](ch2.md#2-3-3-compiling-the-sihrd-model)
-3. Contributing Guidelines
-   * 3.1 General
-   * 3.2 Source
-   * 3.3 Tests
-   * 3.4 Repository
-   * 3.5 Documentation
-   * 3.6 Security 
+3. [Contributing Guidelines](ch3.md)
+   * 3.1 [Introduction](ch3.md#3-1-introduction)
+   * 3.2 Installation
+     * 3.2.1 Cloning from VCS
+     * 3.2.2 Environment Setup
+     * 3.2.3 Building from source
+   * 3.3 Structure
+     * 3.3.1 Repository Structure
+     * 3.3.2 Package Structure
+   * 3.4 Development
+     * 3.4.1 Testing & Code Coverage
+     * 3.4.2 Documentation
+     * 3.4.3 Security
+     * 3.4.4 VCS Notes
+   * 3.5 Contributing to this Manual
 4. Credits
    * 4.1 Open-Source Policy
    * 4.2 Licensing
