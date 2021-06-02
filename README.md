@@ -1,5 +1,5 @@
 ---
-description: v0.1.0.3-beta-3.2.3 for epispot v2.1.1
+description: v0.1.0.4-beta-3.3.2 for epispot v2.1.1
 ---
 
 # The epispot manual
@@ -36,9 +36,9 @@ This is the official manual to the epispot package. It includes background infor
      * 3.2.1 [Cloning from VCS](ch3.md#3-2-1-cloning-from-vcs)
      * 3.2.2 [Environment Setup](ch3.md#3-2-2-environment-setup)
      * 3.2.3 [Building from source](ch3.md#3-2-3-building-from-source)
-   * 3.3 Structure
-     * 3.3.1 Repository Structure
-     * 3.3.2 Package Structure
+   * 3.3 [Structure](ch3.md#3-3-structure)
+     * 3.3.1 [Repository Structure](ch3.md#3-3-1-repository-structure)
+     * 3.3.2 [Package Structure](ch3.md#3-3-2-package-structure)
    * 3.4 Development
      * 3.4.1 Testing & Code Coverage
      * 3.4.2 Documentation

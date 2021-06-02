@@ -13,14 +13,14 @@ description: 'Chapter 3: Contributing Guidelines'
   * 3.2.1 [Cloning from VCS](ch3.md#3-2-1-cloning-from-vcs)
   * 3.2.2 [Environment Setup](ch3.md#3-2-2-environment-setup)
   * 3.2.3 [Building from source](ch3.md#3-2-3-building-from-source)
-* 3.3 Structure
-  * 3.3.1 Repository Structure
-  * 3.3.2 Package Structure
+* 3.3 [Structure](ch3.md#3-3-structure)
+  * 3.3.1 [Repository Structure](ch3.md#3-3-1-repository-structure)
+  * 3.3.2 [Package Structure](ch3.md#3-3-2-package-structure)
 * 3.4 Development
   * 3.4.1 Testing & Code Coverage
   * 3.4.2 Documentation
   * 3.4.3 Security
-  * 3.4.4 VCS Notes
+  * 3.4.4 Repository Notes
 * 3.5 Contributing to this Manual
 
 ### 3.1 Introduction
@@ -152,5 +152,63 @@ Python 3.7.2 (default, May  6 2016, 10:59:36)
 
  ✨🍰✨ Congratulations!
 
+### 3.3 Structure
 
+Understanding any repository and package's structure is key to being able to effectively contribute to it. Luckily, epispot's structure \(both internally and on a repository-scale\) is quite simple and easy-to-learn.
+
+#### 3.3.1 Repository Structure
+
+This is probably the easiest structural element in epispot. As you can see from your local copy, `epispot` is divided into five directories plus the root directory. First, let's go over the root directory \(where all the dotfiles are located\).
+
+In the root directory, you'll find the following dotfiles:
+
+* `.codecov.yml`
+* `.coveragerc`
+* `.deepsource.toml`
+* `.travis.yml`
+* `.gitignore`
+
+The first two are for code coverage configuration. `.coveragerc` tells `coverage.py`, epispot's code coverage analyzer tool, which directories to search and which to ignore. `.codecov.yml` tells CodeCov, epispot's external code coverage reporting tool, when to fail depending on the percentage by which code coverage has decreased. The next two are for code analysis. `.deepsource.toml` tells DeepSource, epispot's code quality analyzer, where the source files are. `.travis.yml` configures a Travis CI routine to run on push to any branch. Lastly, we make it to the `.gitignore`. This is a pretty standard Python `.gitignore` which will ignore the usual cache directories.
+
+Apart from these dotfiles, epispot's root contains a few markdown documents, mainly intended for specific types of contributions that we'll cover in this document. It also contains a `README.md` and `README-nightly.md` where the latter is used for the `nightly` package. The same suffix is used in `setup.py`, too, where it indicates a different package version.
+
+Finally, epispot's root directory contains the basic packaging documents, like `setup.py`, `requirements.txt`, `pyproject.toml`, and various others.
+
+The next directory is the `.github` directory which contains a collection of GitHub-related tools and files designed to optimize the repository. These contain automated workflow scripts that run \(e.g. to create documentation\), issue and pull request templates, and a `CODEOWNERS` file which is used to determine the owner of each part of the `epispot` codebase. This will be discussed later.
+
+The `bin/` and `epispot/` directories are where the source code is stored. `bin/` is used for the CLI and `epispot/` for the package itself. Lastly, we have the `tests/` directory which contains epispot's testing suite and the `explorables/` directory which contains a multitude of explorable examples.
+
+#### 3.3.2 Package Structure
+
+`epispot`'s internal structure is quite simple. Each unit of code has its own file and each subunit its own class. The main files are `models.py`, `comps.py`, `plots.py`, `fitters.py`, `pre.py` and `__init__.py`. The last, of course, initializes the package. The source code runs a relatively simple routine:
+
+* Defines dependency check
+* Imports built-in packages
+* Runs dependency check
+* Imports dependencies
+* Imports modules
+* Defines sanity check
+* Defines global variables
+* Runs sanity check
+
+This routine runs every time epispot is initialized or imported. The next module we'll look at is the `models.py` file. This will show you how to use the docstrings to understand what is going on inside the package. Epispot's code is well-documented and is optimized for additions, deletions, and modifications because it is self-explanatory. For example, if we open up the `Models.get_deriv` method, we can see its source code is simple and well-explained:
+
+```python
+def get_deriv(self, time, system):
+        """
+        Return list of derivatives from each layer.
+        Used by `integrate()` for evaluating model predictions.
+        - time: Time to take derivative at
+        - system: System of state values (S, I, R, etc.) --> e.g [973, 12, 15]
+        - return: List of derivatives in the order that layers were added
+        """
+
+        derivatives = []
+        for layer in range(len(self.layers)):
+            derivatives.append(self.layers[layer].get_deriv(time, system))
+
+        return derivatives
+```
+
+From this, you can see how `epispot` forms links between various classes and modules. If you prefer, you can also view these docstrings with their corresponding source code [online](https://epispot.github.io/epispot/en/latest/models.html#epispot.models.Model.get_deriv).
 
